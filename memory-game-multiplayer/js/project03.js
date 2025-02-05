@@ -1,4 +1,6 @@
 const gameGrid = document.getElementById("gameGrid");
+const playerTurn = document.getElementById("playerTurn");
+const playerscore = document.getElementById("playerScore");
 const moveCounter = document.getElementById("moveCounter");
 const timer = document.getElementById("timer");
 const restartBtn = document.getElementById("restartBtn");
@@ -15,7 +17,9 @@ let timerInterval = null;
 let timeElapsed = 0;
 let gridRows = 4;
 let gridCols = 4;
-
+let player = 1;
+let player1Score = 0;
+let player2Score = 0;
 // List of animal image filenames
 const animalImages = [
   "cat.png", "dog.png", "elephant.png", "fox.png", "lion.png",
@@ -102,7 +106,12 @@ function handleCardClick(e) {
     moves++;
     moveCounter.textContent = moves;
     checkForMatch();
+   
+    playerTurn.textContent = player;
+
   }
+
+
 }
 
 function checkForMatch() {
@@ -113,11 +122,25 @@ function checkForMatch() {
     card1.classList.add("matched");
     card2.classList.add("matched");
     flippedCards = [];
-    
+    if(player === 1) {
+      player1Score++;
+    } else {
+      player2Score++;
+    }
     // Check if all cards are matched
+    
     if (document.querySelectorAll(".card.matched").length === cards.length) {
-      clearInterval(timerInterval);
-      alert(`Game completed in ${moves} moves and ${formatTime(timeElapsed)}!`);
+      if (player1Score > player2Score){
+        clearInterval(timerInterval);
+        alert(`Game completed in ${moves} moves and ${formatTime(timeElapsed)}! and Player1 WON`);
+      } else if (player1Score === player2Score) {
+        clearInterval(timerInterval);
+        alert(`Game completed in ${moves} moves and ${formatTime(timeElapsed)}! and TIED`);
+      } else {
+        clearInterval(timerInterval);
+        alert(`Game completed in ${moves} moves and ${formatTime(timeElapsed)}! and Player2 WON`);
+      }
+ 
     }
   } else {
     setTimeout(() => {
@@ -125,6 +148,13 @@ function checkForMatch() {
       card2.classList.remove("flipped");
       flippedCards = [];
     }, 1000);
+    if(player === 1) {
+      player = 2;
+      playerscore.textContent = player2Score;
+    } else {
+     player = 1;
+     playerscore.textContent = player1Score;
+    }
   }
 }
 
